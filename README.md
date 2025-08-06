@@ -20,6 +20,8 @@ To perform training on the shallow machine learning models, to predict Oil Rate 
 
 To run the deep learning model pass the <code> --model_training dl</code>
 
+The GPU device name (if any exists) can be configured within the DL_Regressors.py file. 
+
 <strong> Training Water Rate</strong> 
 To perform training on the shallow machine learning or deep learning models, to predict Water Rate (WR) and consider WR as model input, run the following command:
 
