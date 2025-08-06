@@ -3,11 +3,15 @@ Short-Term Oil, Water, and Gas Rates in a Pre-Salt Petroleum Field".
 
 <strong> Case Study: UNISIM-IV</strong>
 
+This work focuses on the UNISIM-IV benchmark dataset as a case study to evaluate shallow machine learning and deep learning approaches on short-term production rate forecasts. UNISIM-IV is an open-source benchmark case based on a light-oil carbonate Brazilian pre-salt field with a high oil-gas ratio and CO2 content. In the production strategy, the database consisted of six vertical producers (which are indexed as {P11, P12, . . . , P16} and seven vertical WAG-CO2 injectors. 
+This study only focuses on the producer's data. Each producer’s data contains the daily information on Oil Rate (OR), Water Rate (WR), and Gas Rate (GR).
+
+The producers' dataset (P11 to P16) can be found in the './U4_Data/' folder. 
 
 <strong>Requiements</strong></br>
-Make sure your system satisfies with packages requirments specified in requirment.txt file. Or install them by:
+Make sure your system satisfies with package requirements specified in the requirements.txt file. Or install them by:
 
-<code> pip install requirement.txt</code>
+<code> pip install requirements.txt</code>
 
 <strong> Training Oil Rate</strong> 
 To perform training on the shallow machine learning models, to predict Oil Rate (OR) and consider OR as model input, run the following command:
