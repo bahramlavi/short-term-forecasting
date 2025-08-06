@@ -29,7 +29,7 @@ To perform training on the shallow machine learning or deep learning models, to 
 <strong> Additional Model Input Attributes </strong>
 To add more attributes to the model input features from the existed attributes in the UNISIM-IV dataset (i.e., OR, WR, GR, BHP), run the following code:
 
-An example on prediction OR with additional attributes [WR, GR, BHP]:
+An example of predicting OR with additional attributes [WR, GR, BHP]:
 
 <code>python train.py --model_training [ml or dl] --model_input OR WR GR BHP --model_output OR</code>
 
