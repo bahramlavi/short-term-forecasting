@@ -50,7 +50,8 @@ To generate final results on best models and regression plots, you need to run e
 <code> --comparision </code>: the comparison is pefromed upon which models (ml models, dl models, or comparing jointly ml and dl models)
 
 to compare ml and dl jointly on [OR] prediction, run:
-<code> python eval.py --comparison ml_dl --model_input OR --model_output OR
+
+<code> python eval.py --comparison ml_dl --model_input OR --model_output OR </code>
 
 
 
