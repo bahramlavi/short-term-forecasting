@@ -17,6 +17,8 @@ from tensorflow.keras.layers import MaxPooling1D
 from tensorflow.keras.layers import Flatten
 from sklearn.model_selection import TimeSeriesSplit, GridSearchCV, RandomizedSearchCV
 from scikeras.wrappers import KerasRegressor
+from tcn import TCN
+
 tf.reduce_retracing = True
 
 # Config your GPU device to train DL models
@@ -299,12 +301,80 @@ def call_DL_Regressor():
         
         return oilPred,oilForecast, (train_end - train_start)
 
+    def get_gridsearch_with_TCN(train_X, test_X, train_y, num_split):
+
+        def create_model(neurons, kernel_size):
+            # create model
+            model = Sequential()
+            model.add(
+                TCN(
+                    nb_filters=neurons,        
+                    kernel_size=kernel_size,   
+                    dilations=(2, 4, 8),   
+                    return_sequences=False,    
+                    input_shape=(train_X.shape[1], train_X.shape[2])
+                )
+            )
+            
+            model.add(Dense(1))
+            
+            model.compile(optimizer='adam', loss='mae') 
+            return model
+
+        # Time series cross-validation
+        tscv = TimeSeriesSplit(n_splits=num_split)
+        
+        # Use KerasRegressor from scikeras
+        model = KerasRegressor(
+            model=create_model, 
+            loss='mae', 
+            verbose=0, 
+            shuffle=False, 
+            # Pass default values for TCN-specific params to the wrapper
+            model__neurons=neurons, 
+            model__kernel_size=filter1
+        )
+
+        # Define the hyperparameter grid
+        param_grid = dict(
+            model__neurons=neurons1,          # TCN filters
+            model__kernel_size=filter1,  # TCN kernel size
+            batch_size=batch_size,
+            epochs=epochs,
+            optimizer=optimizer
+        )
+
+        # Initialize GridSearchCV
+        grid = GridSearchCV(
+            estimator=model,
+            param_grid=param_grid,
+            scoring='neg_mean_absolute_error',
+            n_jobs=1,
+            cv=tscv,
+            error_score='raise'
+        )
+
+        train_start = datetime.datetime.now()
+        with tf.device(device):
+            grid_result = grid.fit(train_X, train_y)
+        train_end = datetime.datetime.now()
+
+        oilPred = grid_result.best_estimator_.predict(train_X)
+        oilForecast = grid_result.best_estimator_.predict(test_X)
+
+        reg_f = grid_result.best_estimator_.fit(train_X, train_y)
+        oilPred = reg_f.predict(train_X)
+        oilForecast = reg_f.predict(test_X)
+        
+        return oilPred,oilForecast, (train_end - train_start)
+        
     regs = {'LSTM': get_gridsearch_with_LSTM,
             'LSTMDense': get_gridsearch_with_LSTMdense,
             'BiLSTM': get_gridsearch_with_LSTMbidirectional,
             'BiLSTMDense': get_gridsearch_with_LSTMbidiDense,
             'CNN': get_gridsearch_with_CNN1D,
-            'CNNLSTM': get_gridsearch_with_CNNLSTM
+            'CNNLSTM': get_gridsearch_with_CNNLSTM,
+            'TCN':get_gridsearch_with_TCN
             }
     return regs
 
